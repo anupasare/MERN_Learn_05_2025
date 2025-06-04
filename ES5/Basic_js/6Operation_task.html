@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <script type="text/JavaScript">
+    var x,y,add,sub;
+    var con;
+    do{
+        alert("1:Add 2:Sub")
+        var choice = eval(prompt("Enter your choice"))
+        switch(choice){
+            case 1:alert("Welcome to Addition block")
+                x = eval(prompt("enter the value of x"))
+                y = eval(prompt("enter the value of y"))
+                add = x+y;
+                alert("add "+add)
+                break;
+            case 2:alert("Welcome substraction block")
+                x = eval(prompt("enter the value of x"))
+                y = eval(prompt("enter the value of y"))
+                sub= x-y;
+                alert("sub "+sub)
+                break;
+            default : alert("Wrong choice")
+            break;
+        }
+    con = confirm("do you want to continue?")
+    }while(con);
+    alert("Thank you!")
+   </script> 
+</body>
+</html>

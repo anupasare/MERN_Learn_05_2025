@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+
+</head>
+
+<!-- <link rel="javascript" href="object-ex.js"> -->
+
+<script>
+
+    function readInput() {
+
+        // Get value from input box
+
+        const name = document.getElementById("nameInput").value;
+
+        // Display the value in the paragraph
+
+        document.getElementById("output").innerText = "Hello, " + name + "!";
+
+    }
+
+</script>
+<body>
+    <h2>Enter Your Name</h2>
+    <input type="text" id="nameInput" placeholder="Type your name here" />
+    <button onclick="readInput()">Submit</button>
+    <p id="output"></p>
+
+    <h1>read values form keyboard</h1>
+</body>
+</html>
