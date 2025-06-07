@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Row Add/Delete</title>
+  <style>
+    table{ width: 60%;}
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 8px;
+      text-align: center;
+    }
+    input{
+        height: 10%;
+    }
+    input
+    button {
+      padding: 5px 10px;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Dynamic Table Row Example</h2>
+
+<table id="myTable">
+  <thead>
+    <tr>
+      <th>PId</th>
+      <th>PName</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Rows will be added here -->
+  </tbody>
+</table>
+
+<br>
+<button onclick="addRow()">Add Row</button>
+
+<script>
+function addRow() {
+  const table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+  const newRow = table.insertRow();
+
+  const cell1 = newRow.insertCell(0);
+  const cell2 = newRow.insertCell(1);
+  const cell3 = newRow.insertCell(2);
+
+  cell1.innerHTML = `<input type="text" placeholder="Enter name">`;
+  cell2.innerHTML = `<input type="number" placeholder="Enter age">`;
+  cell3.innerHTML = `<button onclick="deleteRow(this)">Delete</button>`;
+}
+
+function deleteRow(button) {
+  const row = button.parentNode.parentNode;
+  row.parentNode.removeChild(row);
+}
+</script>
+
+</body>
+</html>

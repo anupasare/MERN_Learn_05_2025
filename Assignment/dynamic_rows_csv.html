@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Advanced Dynamic Table</title>
+  <style id="theme">
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f4f4f4;
+      color: #000;
+    }
+    h2 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      margin-bottom: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 95%;
+      padding: 5px;
+    }
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      margin: 3px;
+    }
+    .add-btn { background-color: #4CAF50; }
+    .edit-btn { background-color: #2196F3; }
+    .save-btn { background-color: #009688; }
+    .delete-btn { background-color: #f44336; }
+    .view-btn { background-color: #673ab7; }
+    .export-btn { background-color: #ff9800; }
+    .dark-btn { background-color: #607d8b; }
+    #output {
+      white-space: pre-line;
+      background: #fff;
+      padding: 15px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Advanced Dynamic Table</h2>
+
+<table id="myTable">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Email</th>
+      <th>Gender</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<button class="btn add-btn" onclick="addRow()">Add Row</button>
+<button class="btn view-btn" onclick="viewData()">View Data</button>
+<button class="btn export-btn" onclick="exportCSV()">Export CSV</button>
+<button class="btn dark-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+<div id="output"></div>
+
+<script>
+function addRow(data = null) {
+  const tableBody = document.querySelector("#myTable tbody");
+  const row = tableBody.insertRow();
+
+  row.innerHTML = `
+    <td></td>
+    <td><input type="text" value="${data?.name || ''}" placeholder="Enter name"></td>
+    <td><input type="number" value="${data?.age || ''}" placeholder="Enter age"></td>
+    <td><input type="text" value="${data?.email || ''}" placeholder="Enter email"></td>
+    <td>
+      <select>
+        <option value="">Select</option>
+        <option value="Male" ${data?.gender === "Male" ? "selected" : ""}>Male</option>
+        <option value="Female" ${data?.gender === "Female" ? "selected" : ""}>Female</option>
+        <option value="Other" ${data?.gender === "Other" ? "selected" : ""}>Other</option>
+      </select>
+    </td>
+    <td>
+      <button class="btn save-btn" onclick="saveRow(this)">Save</button>
+      <button class="btn delete-btn" onclick="deleteRow(this)">Delete</button>
+    </td>
+  `;
+
+  updateSerialNumbers();
+}
+
+function saveRow(btn) {
+  const row = btn.closest("tr");
+  const [nameCell, ageCell, emailCell, genderCell] = [1, 2, 3, 4].map(i => row.cells[i]);
+  const name = nameCell.querySelector("input").value;
+  const age = ageCell.querySelector("input").value;
+  const email = emailCell.querySelector("input").value;
+  const gender = genderCell.querySelector("select").value;
+
+  if (!name || !age || !email || !gender) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    alert("Invalid email format.");
+    return;
+  }
+
+  nameCell.innerHTML = name;
+  ageCell.innerHTML = age;
+  emailCell.innerHTML = email;
+  genderCell.innerHTML = gender;
+  row.cells[5].innerHTML = `
+    <button class="btn edit-btn" onclick="editRow(this)">Edit</button>
+    <button class="btn delete-btn" onclick="deleteRow(this)">Delete</button>
+  `;
+
+  saveToLocalStorage();
+}
+
+function editRow(btn) {
+  const row = btn.closest("tr");
+  const [name, age, email, gender] = [1, 2, 3, 4].map(i => row.cells[i].innerText);
+
+  row.cells[1].innerHTML = `<input type="text" value="${name}">`;
+  row.cells[2].innerHTML = `<input type="number" value="${age}">`;
+  row.cells[3].innerHTML = `<input type="text" value="${email}">`;
+  row.cells[4].innerHTML = `
+    <select>
+      <option value="">Select</option>
+      <option value="Male" ${gender === "Male" ? "selected" : ""}>Male</option>
+      <option value="Female" ${gender === "Female" ? "selected" : ""}>Female</option>
+      <option value="Other" ${gender === "Other" ? "selected" : ""}>Other</option>
+    </select>
+  `;
+  row.cells[5].innerHTML = `
+    <button class="btn save-btn" onclick="saveRow(this)">Save</button>
+    <button class="btn delete-btn" onclick="deleteRow(this)">Delete</button>
+  `;
+}
+
+function deleteRow(btn) {
+  const row = btn.closest("tr");
+  row.remove();
+  updateSerialNumbers();
+  saveToLocalStorage();
+}
+
+function updateSerialNumbers() {
+  const rows = document.querySelectorAll("#myTable tbody tr");
+  rows.forEach((row, i) => {
+    row.cells[0].innerText = i + 1;
+  });
+}
+
+function viewData() {
+  const rows = document.querySelectorAll("#myTable tbody tr");
+  let output = "Entered Data:\n\n";
+
+  rows.forEach((row, i) => {
+    const name = row.cells[1].querySelector("input")?.value || row.cells[1].innerText;
+    const age = row.cells[2].querySelector("input")?.value || row.cells[2].innerText;
+    const email = row.cells[3].querySelector("input")?.value || row.cells[3].innerText;
+    const gender = row.cells[4].querySelector("select")?.value || row.cells[4].innerText;
+    output += `Row ${i + 1}: ${name}, ${age}, ${email}, ${gender}\n`;
+  });
+
+  document.getElementById("output").innerText = output;
+}
+
+function exportCSV() {
+  const rows = document.querySelectorAll("#myTable tbody tr");
+  if (!rows.length) return alert("No data to export.");
+
+  let csv = "Name,Age,Email,Gender\n";
+  rows.forEach(row => {
+    const name = row.cells[1].querySelector("input")?.value || row.cells[1].innerText;
+    const age = row.cells[2].querySelector("input")?.value || row.cells[2].innerText;
+    const email = row.cells[3].querySelector("input")?.value || row.cells[3].innerText;
+    const gender = row.cells[4].querySelector("select")?.value || row.cells[4].innerText;
+    csv += `${name},${age},${email},${gender}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "table_data.csv";
+  link.click();
+}
+
+function toggleDarkMode() {
+  const theme = document.getElementById("theme");
+  const isLight = theme.innerHTML.includes("background-color: #f4f4f4");
+  theme.innerHTML = theme.innerHTML.replace(
+    isLight ? "#f4f4f4" : "#121212",
+    isLight ? "#121212" : "#f4f4f4"
+  ).replace(
+    isLight ? "#000" : "#fff",
+    isLight ? "#fff" : "#000"
+  );
+}
+
+// Storage
+function saveToLocalStorage() {
+  const rows = document.querySelectorAll("#myTable tbody tr");
+  const data = [];
+
+  rows.forEach(row => {
+    const name = row.cells[1].innerText;
+    const age = row.cells[2].innerText;
+    const email = row.cells[3].innerText;
+    const gender = row.cells[4].innerText;
+    if (name && age && email && gender) {
+      data.push({ name, age, email, gender });
+    }
+  });
+
+  localStorage.setItem("tableData", JSON.stringify(data));
+}
+
+function loadFromLocalStorage() {
+  const data = JSON.parse(localStorage.getItem("tableData") || "[]");
+  data.forEach(entry => addRow(entry));
+  updateSerialNumbers();
+}
+
+window.onload = loadFromLocalStorage;
+</script>
+
+</body>
+</html>
